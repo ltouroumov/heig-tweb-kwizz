@@ -1,0 +1,14 @@
+{
+    "name": "kwizz/api",
+    "description": "Kwizz App API",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Laureline David",
+            "email": "ltouroumov@gmail.com"
+        }
+    ],
+    "require": {
+        "silex/silex": "^2.0"
+    }
+}

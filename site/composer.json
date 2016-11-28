@@ -1,0 +1,21 @@
+{
+    "name": "kwizz/site",
+    "description": "Kwizz App Frontend",
+    "authors": [
+        {
+            "name": "Laureline David",
+            "email": "ltouroumov@gmail.com"
+        }
+    ],
+    "require": {
+        "silex/silex": "^2.0",
+        "twig/twig": "^1.25",
+        "symfony/twig-bridge": "^3.1",
+        "symfony/asset": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
+}
