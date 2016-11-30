@@ -14,6 +14,6 @@ use Symfony\Component\HttpFoundation as Http;
 class HomeController extends Controller
 {
     public function index(Http\Request $request) {
-        return $this->render('home');
+        return $this->render('home.twig');
     }
 }

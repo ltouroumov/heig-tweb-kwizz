@@ -1,0 +1,23 @@
+{% extends 'app/layout.twig' %}
+
+{% block content_class %}app-content app-index{% endblock %}
+{% block content %}
+
+    <div class="content">
+        <h2>Login</h2>
+        <form class="form-horizontal container-fluid">
+            <div class="form-group">
+                <input type="text" class="col-xs-12 form-control" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input type="text" class="col-xs-12 form-control" placeholder="Password">
+            </div>
+            <div class="form-group text-center">
+                <button class="btn btn-primary">
+                    Login
+                </button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends 'app/layout.twig' %}
+
+{% block content %}
+    <div class="row room-info">
+        <div class="col-md-6">
+            <h1>
+                Room Name
+                <span class="label label-success">Open</span>
+                <span class="label label-warning">Closed</span>
+            </h1>
+        </div>
+        <div class="col-md-6 text-right room-id">
+            <b>Room ID:</b> jolly-beaver
+        </div>
+    </div>
+
+    <div class="row toolbox">
+        <div class="col-xs-12 text-right">
+            <button class="btn btn-success">
+                Close Room
+            </button>
+            <button class="btn btn-warning">
+                Close Room
+            </button>
+            <button class="btn btn-info">
+                <i class="fa fa-plus"></i> New Question
+            </button>
+        </div>
+    </div>
+
+    <div class="question row">
+        <div class="col-xs-12">
+            <div class="heading">
+                <h2>Is this a question ?</h2>
+                <p>A little descritive text (optional)</p>
+            </div>
+            <div class="row answers edit">
+                <div class="option col-xs-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button class="btn btn-block active">Multiple Choice</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-block">Free Answer</button>
+                        </div>
+                    </div>
+                </div>
+                {% for a in 1..4 %}
+                    <div class="option col-xs-12">
+                        <div class="row">
+                            <div class="col-md-11">
+                                <input type="text" class="form-control" value="Answer {{ a }}" />
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-danger"><i class="fa fa-remove"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="option col-xs-12">
+                    <div class="row">
+                        <div class="col-md-11">
+                            <input type="text" class="form-control" placeholder="..." />
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-primary"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary"><i class="fa fa-check"></i> Publish</button>
+                <button class="btn btn-danger"><i class="fa fa-remove"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="question row">
+        <div class="col-xs-12">
+            <div class="heading">
+                <h2>Is this a question ?</h2>
+                <p>A little descritive text (optional)</p>
+            </div>
+            <div class="results">
+                <h3>Answers</h3>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <canvas id="question_1_stats" width="200" height="200"></canvas>
+                        <script>
+                            $(function() {
+                                var ctx = document.getElementById('question_1_stats');
+                                var data = {
+                                    labels: [
+                                        "Red",
+                                        "Blue",
+                                        "Yellow"
+                                    ],
+                                    datasets: [
+                                        {
+                                            data: [300, 50, 100],
+                                            backgroundColor: [
+                                                "#FF6384",
+                                                "#36A2EB",
+                                                "#FFCE56"
+                                            ],
+                                            hoverBackgroundColor: [
+                                                "#FF6384",
+                                                "#36A2EB",
+                                                "#FFCE56"
+                                            ]
+                                        }
+                                    ]
+                                };
+                                var questionStats = new Chart(ctx, {
+                                    type: 'doughnut',
+                                    data: data,
+                                    options: {
+                                        legend: { display: false }
+                                    }
+                                });
+                            })
+                        </script>
+                    </div>
+                    <div class="col-xs-8">
+                        {% for a in 1..6 %}
+                        <div class="result">
+                            <span>Answer {{ a }}</span>
+                            <span class="pull-right">{{ (a * 2) + 5 }}</span>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: {{ a * 10 }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="result total">
+                            <span>Total</span>
+                            <span class="pull-right">125</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn"><i class="fa fa-chevron-up"></i> Less</button>
+                <button class="btn"><i class="fa fa-chevron-down"></i> More</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="question row">
+        <div class="col-xs-12">
+            <div class="heading">
+                <h2>Is this a question ?</h2>
+                <p>A little descritive text (optional)</p>
+            </div>
+            <div class="results">
+                <h3>Answers</h3>
+                <ul>
+                {% for a in 1..6 %}
+                    <li>Answer ...</li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class="text-center">
+                <button class="btn"><i class="fa fa-chevron-up"></i> Less</button>
+                <button class="btn"><i class="fa fa-chevron-down"></i> More</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

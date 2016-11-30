@@ -79,7 +79,10 @@ class ClassControllerResolver implements ControllerResolverInterface
 
         if (!array_key_exists($controllerName, $this->controllers)) {
             $class = new \ReflectionClass($className);
-            $instance = $class->newInstance($this->app);
+            $instance = $class->newInstance();
+            if ($instance instanceof Controller) {
+                $instance->setApp($this->app);
+            }
             $this->controllers[$controllerName] = $instance;
         }
 
