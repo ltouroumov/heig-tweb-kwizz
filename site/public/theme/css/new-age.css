@@ -181,13 +181,13 @@ header .header-content .header-content-inner .list-badges img {
   height: 50px;
   margin-bottom: 25px;
 }
-header .device-container {
-  max-width: 300px;
-  margin: 0 auto 100px;
+
+header .browser-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-header .device-container .screen img {
-  border-radius: 3px;
-}
+
 @media (min-width: 768px) {
   header {
     min-height: 100%;
@@ -207,10 +207,12 @@ header .device-container .screen img {
   header .header-content .header-content-inner h1 {
     font-size: 35px;
   }
-  header .device-container {
-    max-width: none;
-    max-height: calc(0vh);
-    margin: 100px auto 0;
+
+  header .browser-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 }
 @media (min-width: 992px) {
@@ -225,7 +227,7 @@ section h2 {
   font-size: 50px;
 }
 section.download {
-  padding: 150px 0;
+  padding: 50px 0;
   position: relative;
 }
 section.download h2 {
@@ -297,12 +299,19 @@ section.features .feature-item i {
 }
 section.cta {
   position: relative;
-  -webkit-background-size: cover;
+  /*-webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
   -o-background-size: cover;
   background-position: center;
   background-image: url('../img/bg-cta.jpg');
+  */
+  background: url("../img/bg-pattern.png"), #7b4397;
+  /* fallback for old browsers */
+  background: url("../img/bg-pattern.png"), -webkit-linear-gradient(to left, #7b4397, #dc2430);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: url("../img/bg-pattern.png"), linear-gradient(to left, #7b4397, #dc2430);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   padding: 250px 0;
 }
 section.cta .cta-content {
@@ -392,6 +401,7 @@ footer ul li a:active,
 footer ul li a.active {
   text-decoration: none;
 }
+
 .bg-primary {
   background: #fdcc52;
   background: -webkit-linear-gradient(#fdcc52, #fdc539);

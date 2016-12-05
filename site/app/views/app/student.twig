@@ -10,36 +10,40 @@
     </div>
 </div>
 
-<div class="question row">
-    <div class="col-xs-12">
-        <div class="heading">
-            <h2>Is this a question ?</h2>
-            <p>A little descritive text (optional)</p>
-        </div>
-        <div class="row answers">
-            {% for a in 1..6 %}
-            <div class="option col-md-4">
-                <button class="btn btn-block">Answer {{ a }}</button>
+    {% if view == "question1" %}
+    <div class="question row">
+        <div class="col-xs-12">
+            <div class="heading">
+                <h2>{{ data1.question }}</h2>
+                {# <p>A little descritive text (optional)</p> #}
             </div>
-            {% endfor %}
+            <div class="row answers">
+                {% for value in data1.values %}
+                <div class="option col-md-4">
+                    <button class="btn btn-block">{{ value.label }}</button>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-</div>
+    {% endif %}
 
-<div class="question row">
-    <div class="col-xs-12">
-        <div class="heading">
-            <h2>Is this a question ?</h2>
-            <p>A little descritive text (optional)</p>
-        </div>
-        <div class="row answers">
-            <div class="col-md-10">
-                <input class="form-control" placeholder="Answer ..." />
+    {% if view == "question2" %}
+    <div class="question row">
+        <div class="col-xs-12">
+            <div class="heading">
+                <h2>Is this a question ?</h2>
+                <p>A little descritive text (optional)</p>
             </div>
-            <div class="col-md-2">
-                <button class="btn btn-primary btn-block">Validate</button>
+            <div class="row answers">
+                <div class="col-md-10">
+                    <input class="form-control" placeholder="Answer ..." />
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary btn-block">Validate</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    {% endif %}
 {% endblock %}

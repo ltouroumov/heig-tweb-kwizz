@@ -35,6 +35,8 @@ body {
   background: url("../img/bg-pattern.png"), linear-gradient(to left, #7b4397, #dc2430);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
+/*
 a {
   -webkit-transition: all 0.35s;
   -moz-transition: all 0.35s;
@@ -45,12 +47,14 @@ a:hover,
 a:focus {
   color: #fcbd20;
 }
+*/
+
 hr {
   max-width: 100px;
   margin: 25px auto 0;
-  border-width: 1px;
-  border-color: rgba(34, 34, 34, 0.1);
+  border: 1px rgba(34, 34, 34, 0.1);
 }
+
 hr.light {
   border-color: white;
 }
@@ -195,11 +199,11 @@ p {
 }
 
 .app-index .content {
-  width: 600px;
+  width: 800px;
   background: white;
   border: 1px solid rgba(34, 34, 34, 0.05);
   border-radius: 20px;
-  padding: 20px;
+  padding: 15px 0;
 }
 
 .app-index .content h2 {

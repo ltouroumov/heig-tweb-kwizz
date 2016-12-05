@@ -4,20 +4,40 @@
 {% block content %}
 
     <div class="content">
-        <h2>Login</h2>
-        <form class="form-horizontal container-fluid">
-            <div class="form-group">
-                <input type="text" class="col-xs-12 form-control" placeholder="Username">
+        <div class="container-fluid">
+            <div class="col-md-6">
+                <h2>Student Signup</h2>
+                <form class="form-horizontal container-fluid" method="POST">
+                    <div class="form-group">
+                        <input type="text" class="col-xs-12 form-control" name="username" placeholder="Display Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="col-xs-12 form-control" placeholder="Room ID">
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary">
+                            Join
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <input type="text" class="col-xs-12 form-control" placeholder="Password">
+            <div class="col-md-6">
+                <h2>Professor Login</h2>
+                <form class="form-horizontal container-fluid" method="POST">
+                    <div class="form-group">
+                        <input type="text" class="col-xs-12 form-control" name="username" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="col-xs-12 form-control" placeholder="Password">
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary">
+                            Login
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group text-center">
-                <button class="btn btn-primary">
-                    Login
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 
 {% endblock %}

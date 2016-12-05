@@ -1,0 +1,21 @@
+version: '2'
+services:
+  api:
+    build: ./api
+    ports:
+      - "8081:80"
+    environment:
+      - WEB_DOCUMENT_ROOT=/var/web/public
+      - WEB_DOCUMENT_INDEX=/app.php
+    volumes:
+      - ./site:/var/web:Z
+
+  site:
+    build: ./site
+    ports:
+      - "8080:80"
+    environment:
+      - WEB_DOCUMENT_ROOT=/var/web/public
+      - WEB_DOCUMENT_INDEX=/app.php
+    volumes:
+      - ./site:/var/web:Z

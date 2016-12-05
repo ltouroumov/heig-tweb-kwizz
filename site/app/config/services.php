@@ -16,4 +16,6 @@ return function(Application $app) {
         'twig.path' => __DIR__.'/../views',
     ));
 
+    $app->register(new Silex\Provider\SessionServiceProvider());
+
 };
