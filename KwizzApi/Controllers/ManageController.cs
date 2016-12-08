@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +8,7 @@ using WebApplication.Models;
 using WebApplication.Models.ManageViewModels;
 using WebApplication.Services;
 
-namespace WebApplication.Controllers
+namespace KwizzApi.Controllers
 {
     [Authorize]
     public class ManageController : Controller
