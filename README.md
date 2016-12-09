@@ -10,6 +10,9 @@ Laureline David & Yves Athanasiadès
   * PHP
   * .Net MVC
 
+## Navigation
+![image](nav_chart.png)
+
 ## Instructions
 Be sure to have a functional docker(v1.12.x) installation
 
