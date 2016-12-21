@@ -10,4 +10,3 @@ RUN composer install
 
 COPY app /var/web/app
 COPY public /var/web/public
-COPY src /var/web/src
