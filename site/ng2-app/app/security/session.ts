@@ -1,5 +1,7 @@
 export class Session {
 
+    static anonymous: Session = new Session('anonymous', ['ROLE_ANON']);
+
     public constructor(public username: string, public roles: string[]) {
 
     }
@@ -8,5 +10,15 @@ export class Session {
         return roles.every(role => this.roles.includes(role));
     }
 
-    static anonymous: Session = new Session('anonymous', ['ROLE_ANON']);
+    public toJson(): string {
+        return JSON.stringify({
+            username: this.username,
+            roles: this.roles
+        });
+    }
+
+    public static fromJson(json: string) {
+        let jsonObj = JSON.parse(json);
+        return new Session(jsonObj.username, jsonObj.roles);
+    }
 }

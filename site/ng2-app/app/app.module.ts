@@ -12,6 +12,7 @@ import {SessionService} from "./security/session.service";
 import {DropdownModule} from "ng2-bootstrap";
 import {AuthGuardService} from "./security/auth-guard.service";
 import {HomeComponent} from "./home/home.component";
+import {RoomService} from "./room/room.service";
 
 @NgModule({
     imports: [
@@ -23,7 +24,7 @@ import {HomeComponent} from "./home/home.component";
         AppRoutingModule
     ],
     declarations: [AppComponent, HomeComponent],
-    providers: [SessionService, AuthGuardService],
+    providers: [SessionService, RoomService, AuthGuardService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

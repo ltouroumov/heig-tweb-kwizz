@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation, Inject} from '@angular/core';
+import {Component} from '@angular/core';
 
 import '../style/main.scss';
 import '../style/app.scss';

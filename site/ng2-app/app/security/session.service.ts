@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {BehaviorSubject} from "rxjs";
 import {Session} from "./session";
+import {Cookie} from 'ng2-cookies/ng2-cookies';
 
 export enum LoginRequestType {
     STUDENT, PROFESSOR
@@ -33,6 +34,15 @@ export class SessionService {
 
     public constructor() {
         console.log("SessionService Created");
+        let sessionCookie = Cookie.get('kwizz-session');
+        if (sessionCookie != null) {
+            this.sessionSubject.next(Session.fromJson(sessionCookie));
+        }
+
+        this.session.subscribe(session => {
+            if (session != null)
+                Cookie.set('kwizz-session', session.toJson());
+        })
     }
 
     private authenticate(payload: LoginRequest): Promise<Session> {

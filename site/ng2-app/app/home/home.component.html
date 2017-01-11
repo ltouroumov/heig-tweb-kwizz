@@ -1,13 +1,13 @@
 <div class="container app-content app-index">
   <div class="content">
-    <form class="form-horizontal container-fluid">
+    <form class="form-horizontal container-fluid" #roomForm="ngForm" (ngSubmit)="createRoom(roomForm)">
       <h2>Create a Room</h2>
       <div class="form-group">
         <div class="col-xs-9">
-          <input type="text" class="form-control" placeholder="Room Name">
+          <input type="text" class="form-control" name="name" required ngModel placeholder="Room Name">
         </div>
         <div class="col-xs-3">
-          <button type="submit" class="btn btn-block btn-primary">
+          <button type="submit" class="btn btn-block btn-primary" [disabled]="!roomForm.form.valid">
             <i class="fa fa-plus"></i> Create
           </button>
         </div>
@@ -22,29 +22,16 @@
           <th>State</th>
           <th></th>
         </tr>
-        <tr>
-          <td><a href="#">TWEB - Quizz 1</a></td>
+        <tr *ngFor="let room of (rooms | async)">
+          <td><a [routerLink]="['/r', room.id]">{{ room.name }}</a></td>
           <td>05/12/2016</td>
           <td><div class="label label-warning">Closed</div></td>
-          <td><a href="#"><i class="fa fa-download"></i> Results</a> </td>
-        </tr>
-        <tr>
-          <td><a href="#">TWEB - Quizz 2</a></td>
-          <td>05/12/2016</td>
-          <td><div class="label label-warning">Closed</div></td>
-          <td><a href="#"><i class="fa fa-download"></i> Results</a> </td>
-        </tr>
-        <tr>
-          <td><a href="#">AMT - Quizz 1</a></td>
-          <td>05/12/2016</td>
-          <td><div class="label label-warning">Closed</div></td>
-          <td><a href="#"><i class="fa fa-download"></i> Results</a> </td>
-        </tr>
-        <tr>
-          <td><a href="#">AMT - Quizz 2</a></td>
-          <td>05/12/2016</td>
-          <td><div class="label label-warning">Closed</div></td>
-          <td><a href="#"><i class="fa fa-download"></i> Results</a> </td>
+          <td>
+            <div class="btn-group-xs">
+              <button class="btn btn-default"><i class="fa fa-download"></i> Results</button>
+              <button class="btn btn-danger" (click)="deleteRoom(room)"><i class="fa fa-trash"></i> Delete</button>
+            </div>
+          </td>
         </tr>
       </table>
     </div>

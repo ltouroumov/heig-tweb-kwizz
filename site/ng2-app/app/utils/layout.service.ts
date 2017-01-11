@@ -8,7 +8,7 @@ export class LayoutService {
 
     public layout = this.layoutSource.asObservable();
 
-    public setLayout(layout:String): void {
+    public setLayout(layout: String): void {
         this.layoutSource.next(layout);
     }
 
