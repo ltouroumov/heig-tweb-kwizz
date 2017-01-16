@@ -9,7 +9,8 @@ import {Question} from "./question";
 @Component({
     templateUrl: './room.component.html',
     styleUrls: [
-        '../utils/layout.component.scss'
+        '../utils/layout.component.scss',
+        './room.component.scss'
     ]
 })
 export class RoomComponent {

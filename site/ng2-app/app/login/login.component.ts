@@ -5,7 +5,7 @@ import {Router} from "@angular/router";
 
 @Component({
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    styleUrls: ['../utils/layout.component.scss']
 })
 export class LoginComponent {
 
@@ -38,7 +38,7 @@ export class LoginComponent {
         console.log("Professor Login");
         this.session.login(this.professor).then(session => {
             if (session != null) {
-                this.router.navigate(['/home']);
+                this.router.navigate(['/']);
             }
         });
     }

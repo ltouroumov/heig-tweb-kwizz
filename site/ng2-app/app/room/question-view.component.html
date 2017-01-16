@@ -3,7 +3,7 @@
     <h2>{{ question.title }}</h2>
     <p *ngIf="question.description">{{ question.description }}</p>
   </div>
-  <div class="results" #results>
+  <div class="results" [class.hidden]="!showDetails">
     <h3>Answers</h3>
     <div class="row">
       <div class="col-xs-4">
@@ -25,7 +25,7 @@
     </div>
   </div>
   <div class="text-center">
-    <button class="btn btn-link"><i class="fa fa-chevron-up"></i> Less</button>
-    <button class="btn"><i class="fa fa-chevron-down"></i> More</button>
+    <button class="btn btn-link" (click)="showDetails = false" [class.hidden]="!showDetails"><i class="fa fa-chevron-up"></i> Less</button>
+    <button class="btn btn-link" (click)="showDetails = true" [class.hidden]="showDetails"><i class="fa fa-chevron-down"></i> More</button>
   </div>
 </div>

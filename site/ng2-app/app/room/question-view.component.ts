@@ -11,4 +11,6 @@ export class QuestionViewComponent {
     @Input()
     private question: Question;
 
+    private showDetails: boolean = true;
+
 }

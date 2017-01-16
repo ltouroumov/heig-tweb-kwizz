@@ -15,7 +15,7 @@ export class Room {
 
     public addQuestion(question: Question) {
         let tmp = this.questions$.value;
-        tmp.push(question);
+        tmp.unshift(question);
         this.questions$.next(tmp);
     }
 
