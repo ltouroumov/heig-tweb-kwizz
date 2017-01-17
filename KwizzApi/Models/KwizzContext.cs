@@ -6,7 +6,7 @@ namespace KwizzApi.Models {
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=kwizz;Username=kwizz;Password=kwizz;");
+            optionsBuilder.UseNpgsql("Host=postgres-db;Database=kwizz;Username=kwizz;Password=kwizz;");
         }
 
     }
