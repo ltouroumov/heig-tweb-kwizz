@@ -1,7 +1,7 @@
 import {Observable, BehaviorSubject} from "rxjs";
 export class RoomInfo {
 
-    private status$ = new BehaviorSubject<string>('closed');
+    public status$ = new BehaviorSubject<string>('closed');
     public status: Observable<string> = this.status$.asObservable();
 
     constructor(public id: number,
@@ -9,7 +9,16 @@ export class RoomInfo {
 
     }
 
-    changeStatus(status: string) {
+    public static load(json: any): RoomInfo {
+        console.log("RoomInfo", json);
+        let room = new RoomInfo(json["id"], json["name"]);
+        if ("status" in json) {
+            room.changeStatus((<string>json["status"]).toLowerCase());
+        }
+        return room;
+    }
+
+    public changeStatus(status: string) {
         this.status$.next(status);
     }
 }

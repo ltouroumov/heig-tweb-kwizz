@@ -290,8 +290,15 @@ module.exports = function makeWebpackConfig() {
   config.devServer = {
     contentBase: './ng2-app/public',
     historyApiFallback: true,
-    quiet: true,
-    stats: 'minimal' // none (or false), errors-only, minimal, normal (or true) and verbose
+    quiet: false,
+    stats: 'normal', // none (or false), errors-only, minimal, normal (or true) and verbose
+    proxy: [
+      {
+        context: '/api',
+        target: 'http://localhost:5000',
+        pathRewrite: {'^/api' : ''}
+      }
+    ]
   };
 
   return config;

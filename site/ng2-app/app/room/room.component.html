@@ -1,4 +1,8 @@
-<div class="container app-content">
+<div class="container app-content" *ngIf="!room">
+  Loading ...
+</div>
+
+<div class="container app-content" *ngIf="room">
   <div class="row room-info">
     <div class="col-md-6">
       <h1>

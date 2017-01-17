@@ -20,7 +20,7 @@
           <th>Name</th>
           <th>Created</th>
           <th>State</th>
-          <th></th>
+          <th><a (click)="refresh()"><i class="fa fa-refresh"></i></a></th>
         </tr>
         <tr *ngFor="let room of (rooms | async)">
           <td><a [routerLink]="['/r', room.id]">{{ room.name }}</a></td>

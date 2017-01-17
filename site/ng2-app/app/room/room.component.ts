@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {RoomService} from "./room.service";
 import {Subscription, Observable} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
@@ -13,16 +13,20 @@ import {Question} from "./question";
         './room.component.scss'
     ]
 })
-export class RoomComponent {
+export class RoomComponent implements OnInit {
 
-    private room: Room;
+    private room: Room = null;
 
     private mode = 'edit';
 
     constructor(private roomService: RoomService,
                 private activatedRoute: ActivatedRoute) {
-        activatedRoute.params.take(1).subscribe(param => {
-            this.roomService.get(param['id']).take(1).subscribe(room => {
+
+    }
+
+    public ngOnInit(): void {
+        this.activatedRoute.params.take(1).subscribe(param => {
+            this.roomService.get(param['id']).subscribe(room => {
                 console.log("Got Room", room);
                 this.room = room;
                 this.room.info.status.subscribe(status => {

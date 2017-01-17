@@ -4,7 +4,7 @@ import {Question} from "./question";
 
 export class Room {
 
-    private questions$ = new BehaviorSubject<Question[]>([
+    public questions$ = new BehaviorSubject<Question[]>([
         new Question('Hello World')
     ]);
     public questions = this.questions$.asObservable();

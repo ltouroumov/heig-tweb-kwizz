@@ -14,27 +14,37 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     rooms: Observable<RoomInfo[]>;
 
-    constructor(private roomsService: RoomService) {
+    constructor(private roomService: RoomService) {
 
     }
 
     public ngOnInit(): void {
-        this.rooms = this.roomsService.rooms;
+        this.rooms = this.roomService.getAll();
     }
 
     public ngOnDestroy(): void {
+
+    }
+
+    public refresh(): void {
+        console.log("Refreshing");
+        this.rooms = this.roomService.getAll();
     }
 
     public createRoom(form: NgForm) {
         if (form.valid) {
-            let room = new RoomInfo(++this.lastId, form.value.name);
-            this.roomsService.add(room);
+            let room = new RoomInfo(0, form.value.name);
+            this.roomService.add(room).subscribe(() => {
+                this.refresh();
+            });
         }
     }
 
     public deleteRoom(room: RoomInfo) {
         if (confirm("Are you sure?")) {
-            this.roomsService.del(room);
+            this.roomService.remove(room).subscribe(() => {
+                this.refresh();
+            });
         }
     }
 
