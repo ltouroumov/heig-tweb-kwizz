@@ -1,15 +1,18 @@
 version: '2'
 services:
-# TODO: Build .NET container for backend
-#  api:
-#    build: ./api
-#    ports:
-#      - "8081:80"
-#    environment:
-#      - WEB_DOCUMENT_ROOT=/var/web/public
-#      - WEB_DOCUMENT_INDEX=/app.php
-#    volumes:
-#      - ./site:/var/web:Z
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=kwizz
+      - POSTGRES_PASSWORD=kwizz
+      - POSTGRES_DB=kwizz
+
+  api:
+    build: ./KwizzApi
+    links:
+      - db:postgres-db
+    ports:
+      - "5000:5000"
 
   site:
     build: ./site
