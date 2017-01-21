@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {BehaviorSubject} from "rxjs";
 import {Session} from "./session";
 import {Cookie} from 'ng2-cookies/ng2-cookies';
+import {Http} from "@angular/http";
+import {AuthRequestOptions} from "./auth-request-options";
 
 export enum LoginRequestType {
     STUDENT, PROFESSOR
@@ -32,7 +34,7 @@ export class SessionService {
 
     public session = this.sessionSubject.asObservable();
 
-    public constructor() {
+    public constructor(private http: Http, private requestOptions: AuthRequestOptions) {
         console.log("SessionService Created");
         let sessionCookie = Cookie.get('kwizz-session');
         if (sessionCookie != null) {
@@ -40,8 +42,10 @@ export class SessionService {
         }
 
         this.session.subscribe(session => {
-            if (session != null)
+            if (session != null) {
                 Cookie.set('kwizz-session', session.toJson());
+                this.requestOptions.headers.set('Authorization', 'Bearer ' + session.token);
+            }
         })
     }
 
@@ -52,13 +56,21 @@ export class SessionService {
             case LoginRequestType.STUDENT:
                 return Promise.resolve(new Session(
                     (<StudentLogin>payload).name,
+                    null,
                     ['ROLE_USER', 'ROLE_STUDENT']
                 ));
             case LoginRequestType.PROFESSOR:
-                return Promise.resolve(new Session(
-                    (<ProfessorLogin>payload).username,
-                    ['ROLE_USER', 'ROLE_PROF']
-                ));
+                return this.http.post('/api/login/professor', payload)
+                    .filter(response => response.ok)
+                    .map(response => response.json())
+                    .map(json =>
+                        new Session(
+                            json.username,
+                            json.access_token,
+                            json.roles
+                        )
+                    )
+                    .toPromise();
             default:
                 return Promise.resolve(Session.anonymous);
         }

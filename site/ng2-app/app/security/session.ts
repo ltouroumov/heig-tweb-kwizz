@@ -1,8 +1,8 @@
 export class Session {
 
-    static anonymous: Session = new Session('anonymous', ['ROLE_ANON']);
+    static anonymous: Session = new Session('anonymous', null, ['ROLE_ANON']);
 
-    public constructor(public username: string, public roles: string[]) {
+    public constructor(public username: string, public token: string, public roles: string[]) {
 
     }
 
@@ -19,6 +19,6 @@ export class Session {
 
     public static fromJson(json: string) {
         let jsonObj = JSON.parse(json);
-        return new Session(jsonObj.username, jsonObj.roles);
+        return new Session(jsonObj.username, jsonObj.token, jsonObj.roles);
     }
 }

@@ -27,15 +27,41 @@ export class WebSocketService {
             }
         );
 
-        let observer = {
-            next: (data: any) => {
-                if (ws.readyState == WebSocket.OPEN) {
-                    ws.send(JSON.stringify(data));
-                }
-            }
-        };
+        let observer = new MessageQueue(ws);
 
         return Subject.create(observer, observable);
+    }
+
+}
+
+class MessageQueue {
+
+    private queue: any[] = [];
+
+    private isOpen: boolean = false;
+
+    public constructor(private socket: WebSocket) {
+        this.socket.onopen = this.onOpen.bind(this);
+    }
+
+    private onOpen() {
+        var msg;
+        while (msg = this.queue.pop()) {
+            this.send(msg);
+        }
+        this.isOpen = true;
+    }
+
+    private send(message: any) {
+        this.socket.send(message);
+    }
+
+    public next(message: any) {
+        if (this.socket.readyState == WebSocket.OPEN) {
+            this.send(message);
+        } else {
+            this.queue.unshift(message);
+        }
     }
 
 }

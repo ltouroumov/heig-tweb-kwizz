@@ -1,6 +1,6 @@
 import {NgModule, ApplicationRef} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {HttpModule} from '@angular/http';
+import {HttpModule, RequestOptions} from '@angular/http';
 import {FormsModule} from '@angular/forms';
 
 import {AppRoutingModule} from './app.routing';
@@ -13,6 +13,7 @@ import {DropdownModule} from "ng2-bootstrap";
 import {AuthGuardService} from "./security/auth-guard.service";
 import {HomeComponent} from "./home/home.component";
 import {RoomService} from "./room/room.service";
+import {AuthRequestOptions} from "./security/auth-request-options";
 
 @NgModule({
     imports: [
@@ -24,7 +25,12 @@ import {RoomService} from "./room/room.service";
         AppRoutingModule
     ],
     declarations: [AppComponent, HomeComponent],
-    providers: [SessionService, RoomService, AuthGuardService],
+    providers: [
+        SessionService,
+        { provide: RequestOptions, useClass: AuthRequestOptions },
+        RoomService,
+        AuthGuardService
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

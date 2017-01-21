@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {RoomInfo} from "./room-info";
-import {Observable, BehaviorSubject} from "rxjs";
+import {Observable} from "rxjs";
 import {Room} from "./room";
 import {Http} from "@angular/http";
 
