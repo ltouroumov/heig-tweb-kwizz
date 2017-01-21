@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace KwizzApi.Models {
     public class KwizzContext : DbContext {
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<ProfessorUser> Professors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
