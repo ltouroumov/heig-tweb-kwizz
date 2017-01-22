@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace KwizzApi.Models {
-    public class KwizzContext : DbContext {
+    public class KwizzContext : IdentityDbContext<ApplicationUser> {
+
         public DbSet<Room> Rooms { get; set; }
-        public DbSet<ProfessorUser> Professors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

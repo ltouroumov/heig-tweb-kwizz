@@ -12,6 +12,7 @@ using KwizzApi.Rooms;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace KwizzApi
 {
@@ -56,19 +57,31 @@ namespace KwizzApi
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            // Get options from app settings
-            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<KwizzContext>()
+                .AddDefaultTokenProviders();
 
-            // Configure JwtIssuerOptions
-            services.Configure<JwtIssuerOptions>(options =>
+            services.Configure<IdentityOptions>(options =>
             {
-                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
-                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
-                options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                
+                // Cookie settings
+                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
+                options.Cookies.ApplicationCookie.LoginPath = "/account/login";
+                options.Cookies.ApplicationCookie.LogoutPath = "/account/logoff";
+                
+                // User settings
+                options.User.RequireUniqueEmail = false;
             });
-
-            // Use policy auth.
-            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,31 +90,7 @@ namespace KwizzApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
-
-                ValidateAudience = true,
-                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
-
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = _signingKey,
-
-                RequireExpirationTime = true,
-                ValidateLifetime = true,
-
-                ClockSkew = TimeSpan.Zero
-            };
-
-            app.UseJwtBearerAuthentication(new JwtBearerOptions
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                TokenValidationParameters = tokenValidationParameters
-            });
-
+            app.UseIdentity();
             app.UseWebSockets();
             app.UseMvc();
         }

@@ -8,9 +8,10 @@ using KwizzApi.Models;
 namespace KwizzApi.Migrations
 {
     [DbContext(typeof(KwizzContext))]
-    partial class KwizzContextModelSnapshot : ModelSnapshot
+    [Migration("20170122090913_AddApplicationUser")]
+    partial class AddApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)

@@ -9,6 +9,7 @@ using KwizzApi.Models.Views.Room;
 using KwizzApi.Rooms;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace KwizzApi.Controllers
@@ -16,29 +17,31 @@ namespace KwizzApi.Controllers
     [Route("rooms")]
     public class RoomsController : Controller
     {
-        private KwizzContext Context;
-        private RoomHandlerManager RoomHandlerManager;
-        private ILogger<RoomsController> Logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly KwizzContext _context;
+        private readonly RoomHandlerManager _roomHandlerManager;
+        private readonly ILogger<RoomsController> _logger;
 
-        public RoomsController(KwizzContext context, RoomHandlerManager roomHandlerManager, ILogger<RoomsController> logger)
+        public RoomsController(KwizzContext context, RoomHandlerManager roomHandlerManager, ILogger<RoomsController> logger, UserManager<ApplicationUser> userManager)
         {
-            this.Context = context;
-            this.RoomHandlerManager = roomHandlerManager;
-            this.Logger = logger;
+            _context = context;
+            _roomHandlerManager = roomHandlerManager;
+            _logger = logger;
+            _userManager = userManager;
         }
 
         // GET api/values
         [HttpGet]
         public IEnumerable<Room> Get()
         {
-            return Context.Rooms.OrderBy(room => room.Id).ToList();
+            return _context.Rooms.OrderBy(room => room.Id).ToList();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public Room Get(long id)
         {
-            return Context.Rooms.First(room => room.Id == id);
+            return _context.Rooms.First(room => room.Id == id);
         }
 
         // POST api/values
@@ -49,8 +52,8 @@ namespace KwizzApi.Controllers
             {
                 Name = body.Name
             };
-            Context.Rooms.Add(room);
-            Context.SaveChanges();
+            _context.Rooms.Add(room);
+            _context.SaveChanges();
 
             return room;
         }
@@ -59,12 +62,12 @@ namespace KwizzApi.Controllers
         [HttpPut("{id}")]
         public Room Put(int id, [FromBody] UpdateRoom body)
         {
-            var room = Context.Rooms.First(r => r.Id == id);
+            var room = _context.Rooms.First(r => r.Id == id);
             room.Name = body.Name;
             room.Status = body.Status;
 
-            Context.Rooms.Update(room);
-            Context.SaveChanges();
+            _context.Rooms.Update(room);
+            _context.SaveChanges();
 
             return room;
         }
@@ -73,35 +76,34 @@ namespace KwizzApi.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            var room = Context.Rooms.First(r => r.Id == id);
-            Context.Rooms.Remove(room);
-            Context.SaveChanges();
+            var room = _context.Rooms.First(r => r.Id == id);
+            _context.Rooms.Remove(room);
+            _context.SaveChanges();
         }
 
         [HttpGet("{id}/connect")]
-        [AllowAnonymous]
         public async Task Connect(int id)
         {
-            var user = HttpContext.User;
-            Logger.LogInformation("Attempting connection to room {0} with {1}", id, user.FindFirst(JwtRegisteredClaimNames.Sub)?.Value);
-            var room = Context.Rooms.FirstOrDefault(r => r.Id == id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            _logger.LogInformation("Attempting connection to room {0} with {1}", id, user.UserName);
+            var room = _context.Rooms.FirstOrDefault(r => r.Id == id);
             if (room == null)
             {
-                Logger.LogError("Room not found {0}", id);
+                _logger.LogError("Room not found {0}", id);
             }
             else if (!HttpContext.WebSockets.IsWebSocketRequest)
             {
-                Logger.LogError("Is not a websocket upgrade request");
+                _logger.LogError("Is not a websocket upgrade request");
             }
             else
             {
-                Logger.LogInformation("Accepting Connection");
+                _logger.LogInformation("Accepting Connection");
                 var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                Logger.LogInformation("Creating Handler");
-                var handler = RoomHandlerManager.GetHandler(room);
-                Logger.LogInformation("Handling Connection");
-                await handler.Connect(socket).Handle();
-                Logger.LogInformation("Connection Terminated");
+                _logger.LogInformation("Creating Handler");
+                var handler = _roomHandlerManager.GetHandler(room);
+                _logger.LogInformation("Handling Connection");
+                await handler.Connect(socket, user).Handle();
+                _logger.LogInformation("Connection Terminated");
             }
         }
     }
