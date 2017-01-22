@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {BehaviorSubject} from "rxjs";
 import {Session} from "./session";
 import {Cookie} from 'ng2-cookies/ng2-cookies';
-import {Http} from "@angular/http";
+import {Http, RequestOptionsArgs, Headers} from "@angular/http";
 import {AuthRequestOptions} from "./auth-request-options";
 
 export enum LoginRequestType {
@@ -39,14 +39,27 @@ export class SessionService {
         let sessionCookie = Cookie.get('kwizz-session');
         if (sessionCookie != null) {
             this.sessionSubject.next(Session.fromJson(sessionCookie));
+            console.log("Session loaded");
         }
 
         this.session.subscribe(session => {
             if (session != null) {
                 Cookie.set('kwizz-session', session.toJson());
+                console.log("Setting session header");
                 this.requestOptions.headers.set('Authorization', 'Bearer ' + session.token);
+            } else {
+                console.log("Removing session header");
+                this.requestOptions.headers.delete('Authorization');
             }
         })
+    }
+
+    public getHeaders(): RequestOptionsArgs {
+        return {
+            headers: new Headers({
+                'Authorization': 'Bearer ' + this.sessionSubject.value.token
+            })
+        };
     }
 
     private authenticate(payload: LoginRequest): Promise<Session> {

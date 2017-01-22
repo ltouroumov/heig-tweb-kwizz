@@ -8,8 +8,6 @@ var autoprefixer = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var DashboardPlugin = require('webpack-dashboard/plugin');
-var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 
 /**
  * Env
@@ -90,14 +88,14 @@ module.exports = function makeWebpackConfig() {
       // Support for .ts files.
       {
         test: /\.ts$/,
-        loaders: ['awesome-typescript-loader?' + atlOptions, 'angular2-template-loader', '@angularclass/hmr-loader'],
+        loaders: ['awesome-typescript-loader?' + atlOptions, 'angular2-template-loader'],
         exclude: [isTest ? /\.(e2e)\.ts$/ : /\.(spec|e2e)\.ts$/, /node_modules\/(?!(ng2-.+))/]
       },
 
       // copy those assets to output
       {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]?'
+        loader: 'file-loader?name=fonts/[name].[hash].[ext]?'
       },
 
       // Support for *.json files.
@@ -109,10 +107,10 @@ module.exports = function makeWebpackConfig() {
       {
         test: /\.css$/,
         exclude: root('ng2-app', 'app'),
-        loader: isTest ? 'null' : ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css', 'postcss']})
+        loader: isTest ? 'null' : ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css-loader', 'postcss-loader']})
       },
       // all css required in src/app files will be merged in js files
-      {test: /\.css$/, include: root('ng2-app', 'app'), loader: 'raw!postcss'},
+      {test: /\.css$/, include: root('ng2-app', 'app'), loader: 'raw-loader!postcss-loader'},
 
       // support for .scss files
       // use 'null' loader in test mode (https://github.com/webpack/null-loader)
@@ -120,13 +118,13 @@ module.exports = function makeWebpackConfig() {
       {
         test: /\.(scss|sass)$/,
         exclude: root('ng2-app', 'app'),
-        loader: isTest ? 'null' : ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css', 'postcss', 'sass']})
+        loader: isTest ? 'null' : ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css-loader', 'postcss-loader', 'sass-loader']})
       },
       // all css required in src/app files will be merged in js files
       {
         test: /\.(scss|sass)$/,
         exclude: root('ng2-app', 'style'),
-        loader: 'raw!postcss!sass'
+        loader: 'raw-loader!postcss-loader!sass-loader'
       },
 
 
@@ -136,18 +134,18 @@ module.exports = function makeWebpackConfig() {
       {
         test: /\.(less)$/,
         exclude: root('ng2-app', 'app'),
-        loader: isTest ? 'null' : ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css', 'postcss', 'less']})
+        loader: isTest ? 'null' : ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: ['css-loader', 'postcss-loader', 'less-loader']})
       },
       // all css required in src/app files will be merged in js files
       {
         test: /\.(less)$/,
         exclude: root('ng2-app', 'style'),
-        loader: 'raw!postcss!less'
+        loader: 'raw-loader!postcss-loader!less-loader'
       },
 
       // support for .html as raw text
       // todo: change the loader to something that adds a hash to images
-      {test: /\.html$/, loader: 'raw',  exclude: root('src', 'public')},
+      {test: /\.html$/, loader: 'raw-loader',  exclude: root('src', 'public')},
     ],
   };
 
@@ -161,7 +159,7 @@ module.exports = function makeWebpackConfig() {
       exclude: [/\.spec\.ts$/, /\.e2e\.ts$/, /node_modules/]
     });
   }
-
+  /*
   if (!isTest || !isTestWatch) {
     // tslint support
     config.module.rules.push({
@@ -170,7 +168,7 @@ module.exports = function makeWebpackConfig() {
       loader: 'tslint'
     });
   }
-
+  */
   /**
    * Plugins
    * Reference: http://webpack.github.io/docs/configuration.html#plugins
@@ -230,14 +228,8 @@ module.exports = function makeWebpackConfig() {
     })
   ];
 
-  if (!isTest && !isProd) {
-      config.plugins.push(new DashboardPlugin());
-  }
-
   if (!isTest && !isTestWatch) {
     config.plugins.push(
-      new ForkCheckerPlugin(),
-
       // Generate common chunks if necessary
       // Reference: https://webpack.github.io/docs/code-splitting.html
       // Reference: https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin
