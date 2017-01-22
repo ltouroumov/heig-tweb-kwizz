@@ -7,7 +7,7 @@ import {ProfileComponent} from "./profile.component";
 
 export const routes: Routes = [
     {path: 'login', component: LoginComponent},
-    {path: 'profile', canActivate: [AuthGuardService], data: { roles: ['ROLE_USER'] }, component: ProfileComponent},
+    {path: 'profile', canActivate: [AuthGuardService], data: { anonymous: false }, component: ProfileComponent},
 ];
 
 @NgModule({

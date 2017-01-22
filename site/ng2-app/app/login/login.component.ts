@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
-import {SessionService, ProfessorLogin, StudentLogin} from "../security/session.service";
+import {SessionService, IdentityLogin} from "../security/session.service";
 import {Router} from "@angular/router";
+import {Observable} from "rxjs";
 
 
 @Component({
@@ -9,38 +10,46 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent {
 
-    public student: StudentLogin = new StudentLogin();
+    public identity: IdentityLogin = new IdentityLogin();
 
-    public professor: ProfessorLogin = new ProfessorLogin();
+    public errors: string[] = null;
 
     public constructor(private session: SessionService, private router: Router) {
 
     }
 
-    public doStudentLogin($event: Event) {
+    public doLogin($event: Event) {
         $event.preventDefault();
 
-        console.log("Student Login");
-        this.session.login(this.student).then(session => {
-            if (session != null) {
-                console.log("Got Session");
-                this.router.navigate(['/home']);
-            } else {
-                console.log("Got no session");
-            }
-        });
+        this.session.login(this.identity)
+            .catch((err, caught) => {
+                console.log(err, caught);
+                this.errors = ["Failed to login"];
+                return Observable.throw(err);
+            })
+            .subscribe(session => {
+                if (session.loggedIn) {
+                    this.router.navigate(['/']);
+                }
+            });
 
     }
 
-    public doProfessorLogin($event: Event) {
+    public doSignIn($event: Event) {
         $event.preventDefault();
 
-        console.log("Professor Login");
-        this.session.login(this.professor).then(session => {
-            if (session != null) {
-                this.router.navigate(['/']);
-            }
-        });
+        this.session.signin(this.identity)
+            .catch((err, caught) => {
+                let errors = err.json();
+                this.errors = errors.map(error => error['description']);
+
+                return Observable.throw(err);
+            })
+            .subscribe(session => {
+                if (session.loggedIn) {
+                    this.router.navigate(['/']);
+                }
+            });
     }
 
 }

@@ -5,7 +5,7 @@ import {AuthGuardService} from "../security/auth-guard.service";
 import {RoomComponent} from "./room.component";
 
 export const routes: Routes = [
-    {path: ':id', canActivate: [AuthGuardService], data: { roles: ['ROLE_USER'] }, component: RoomComponent},
+    {path: ':id', canActivate: [AuthGuardService], data: { anonymous: false }, component: RoomComponent},
 ];
 
 @NgModule({

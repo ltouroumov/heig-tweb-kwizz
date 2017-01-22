@@ -15,15 +15,10 @@ export class AuthGuardService implements CanActivate {
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        let roles = route.data["roles"] as Array<string>;
+        let anon = route.data["anonymous"] as boolean;
 
-        if (this.session != null) {
-            if (this.session.hasRoles(roles)) {
-                return true;
-            } else {
-                this.router.navigate(['/u/profile']);
-                return false;
-            }
+        if (this.session.loggedIn != anon) {
+            return true;
         } else {
             this.router.navigate(['/u/login']);
             return false;

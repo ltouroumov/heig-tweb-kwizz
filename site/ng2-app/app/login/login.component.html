@@ -1,34 +1,27 @@
 <div class="container app-content app-index">
 <div class="content">
   <div class="container-fluid">
-    <div class="col-md-6">
-      <h2>Student Signup</h2>
+    <div class="col-md-12">
+      <h2>Log In / Sign In</h2>
       <form class="form-horizontal container-fluid">
-        <div class="form-group">
-          <input type="text" class="col-xs-12 form-control" [(ngModel)]="student.name" name="name" placeholder="Display Name">
+        <div class="alert alert-danger" *ngIf="errors">
+          <ul>
+            <li *ngFor="let error of errors">{{ error }}</li>
+          </ul>
         </div>
         <div class="form-group">
-          <input type="text" class="col-xs-12 form-control" [(ngModel)]="student.room" name="room" placeholder="Room ID">
+          <input type="text" class="col-xs-12 form-control" [(ngModel)]="identity.username" name="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+          <input type="password" class="col-xs-12 form-control" [(ngModel)]="identity.password" name="password" placeholder="Password">
         </div>
         <div class="form-group text-center">
-          <button class="btn btn-primary" (click)="doStudentLogin($event)">
-            Join
+          <button class="btn btn-primary" (click)="doLogin($event)">
+            Log In
           </button>
-        </div>
-      </form>
-    </div>
-    <div class="col-md-6">
-      <h2>Professor Login</h2>
-      <form class="form-horizontal container-fluid">
-        <div class="form-group">
-          <input type="text" class="col-xs-12 form-control" [(ngModel)]="professor.username" name="username" placeholder="Username">
-        </div>
-        <div class="form-group">
-          <input type="text" class="col-xs-12 form-control" [(ngModel)]="professor.password" name="password" placeholder="Password">
-        </div>
-        <div class="form-group text-center">
-          <button class="btn btn-primary" (click)="doProfessorLogin($event)">
-            Login
+
+          <button class="btn btn-primary" (click)="doSignIn($event)">
+            Sign In
           </button>
         </div>
       </form>

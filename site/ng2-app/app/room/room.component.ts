@@ -23,8 +23,6 @@ export class RoomComponent implements OnInit {
 
     private socket: Subject<any>;
 
-    private mode = 'edit';
-
     constructor(private roomService: RoomService,
                 private activatedRoute: ActivatedRoute,
                 private socketService: WebSocketService) {
@@ -40,8 +38,10 @@ export class RoomComponent implements OnInit {
                     console.log("New status", status);
                 });
 
-                this.socket = this.socketService.connect(`ws://locahost:8080/api/rooms/${room.info.id}/connect`);
-                this.socket.next({"type": "HELO"});
+                this.socket = this.socketService.connect(`ws://localhost:5000/rooms/${room.info.id}/connect`);
+                this.socket.subscribe(message => {
+                    console.log(message);
+                })
             });
         });
 

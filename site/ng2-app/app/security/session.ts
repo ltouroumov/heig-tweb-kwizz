@@ -1,24 +1,20 @@
 export class Session {
 
-    static anonymous: Session = new Session('anonymous', null, ['ROLE_ANON']);
+    static anonymous: Session = new Session('anonymous', false);
 
-    public constructor(public username: string, public token: string, public roles: string[]) {
+    public constructor(public username: string, public loggedIn: boolean) {
 
-    }
-
-    public hasRoles(roles: string[]) {
-        return roles.every(role => this.roles.includes(role));
     }
 
     public toJson(): string {
         return JSON.stringify({
             username: this.username,
-            roles: this.roles
+            loggedIn: this.loggedIn
         });
     }
 
     public static fromJson(json: string) {
         let jsonObj = JSON.parse(json);
-        return new Session(jsonObj.username, jsonObj.token, jsonObj.roles);
+        return new Session(jsonObj.username, jsonObj.loggedIn);
     }
 }

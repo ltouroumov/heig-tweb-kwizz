@@ -21,8 +21,10 @@ export class UserMenuComponent {
     }
 
     public doLogout() {
-        this.sessionService.logout();
-        this.router.navigate(['/login']);
+        this.sessionService.logout()
+            .subscribe(sess => {
+                this.router.navigate(['/login']);
+            });
     }
 
 }

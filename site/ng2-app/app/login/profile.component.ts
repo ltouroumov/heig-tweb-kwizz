@@ -11,7 +11,7 @@ export class ProfileComponent {
     public session: Session;
 
     public constructor(private sessionService: SessionService) {
-        this.session = this.sessionService.sessionSubject.getValue();
+        this.session = this.sessionService.session.getValue();
     }
 
 }
