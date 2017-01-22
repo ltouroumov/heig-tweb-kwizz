@@ -43,7 +43,6 @@ namespace KwizzApi.Controllers
 
         // POST api/values
         [HttpPost]
-        [Authorize(policy: "Professor")]
         public Room Post([FromBody] CreateRoom body)
         {
             var room = new Room()
@@ -58,7 +57,6 @@ namespace KwizzApi.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        [Authorize(policy: "Professor")]
         public Room Put(int id, [FromBody] UpdateRoom body)
         {
             var room = Context.Rooms.First(r => r.Id == id);
@@ -73,7 +71,6 @@ namespace KwizzApi.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        [Authorize(policy: "Professor")]
         public void Delete(int id)
         {
             var room = Context.Rooms.First(r => r.Id == id);

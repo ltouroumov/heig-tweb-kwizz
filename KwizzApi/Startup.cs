@@ -68,14 +68,7 @@ namespace KwizzApi
             });
 
             // Use policy auth.
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Professor", policy =>
-                    policy.RequireAssertion(ctx =>
-                        ctx.User.FindFirst("Roles")?.Value?.Contains("ROLE_PROF") ?? false
-                    )
-                );
-            });
+            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
