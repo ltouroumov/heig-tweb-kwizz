@@ -15,14 +15,14 @@ export class RoomService {
         return this.http.get('/api/rooms')
             .filter(response => response.ok)
             .map(response => response.json())
-            .map(rooms => rooms.map(room => RoomInfo.load(room)));
+            .map(rooms => rooms.map(room => RoomInfo.fromJson(room)));
     }
 
 
     public getInfo(id: number): Observable<RoomInfo> {
         return this.http.get(`/api/rooms/${id}`)
             .map(response => response.json())
-            .map(json => RoomInfo.load(json));
+            .map(json => RoomInfo.fromJson(json));
     }
 
     public get(id: number): Observable<Room> {
@@ -35,16 +35,16 @@ export class RoomService {
             name: room.name
         })
             .map(resp => resp.json())
-            .map(json => RoomInfo.load(json));
+            .map(json => RoomInfo.fromJson(json));
     }
 
     public update(room: RoomInfo): Observable<RoomInfo> {
         return this.http.put(`/api/rooms/${room.id}`, {
             name: room.name,
-            status: room.status$.value
+            status: room.status
         })
             .map(resp => resp.json())
-            .map(json => RoomInfo.load(json));
+            .map(json => RoomInfo.fromJson(json));
     }
 
     public remove(room: RoomInfo): Observable<boolean> {
@@ -52,4 +52,9 @@ export class RoomService {
             .map(resp => resp.ok);
     }
 
+    public join(name: string): Observable<RoomInfo> {
+        return this.http.post('/api/rooms/join', { name: name })
+            .map(resp => resp.json())
+            .map(json => RoomInfo.fromJson(json));
+    }
 }

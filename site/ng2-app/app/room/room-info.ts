@@ -1,24 +1,23 @@
-import {Observable, BehaviorSubject} from "rxjs";
 export class RoomInfo {
 
-    public status$ = new BehaviorSubject<string>('closed');
-    public status: Observable<string> = this.status$.asObservable();
+    public status: string = 'Closed';
+
+    public key: string = null;
+
+    public owner: string = null;
 
     constructor(public id: number,
                 public name: String) {
 
     }
 
-    public static load(json: any): RoomInfo {
-        console.log("RoomInfo", json);
+    public static fromJson(json: any): RoomInfo {
         let room = new RoomInfo(json["id"], json["name"]);
+        room.owner = json.owner.userName;
+        room.key = json.key;
         if ("status" in json) {
-            room.changeStatus((<string>json["status"]).toLowerCase());
+            room.status = (<string>json["status"]);
         }
         return room;
-    }
-
-    public changeStatus(status: string) {
-        this.status$.next(status);
     }
 }

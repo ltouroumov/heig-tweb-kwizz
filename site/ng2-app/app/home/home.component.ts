@@ -3,6 +3,7 @@ import {RoomService} from "../room/room.service";
 import {RoomInfo} from "../room/room-info";
 import {NgForm} from "@angular/forms";
 import {Observable} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
     templateUrl: './home.component.html',
@@ -12,9 +13,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private lastId: number = 1;
 
-    rooms: Observable<RoomInfo[]>;
+    private rooms: Observable<RoomInfo[]>;
 
-    constructor(private roomService: RoomService) {
+    private joinError: string = null;
+
+    constructor(private roomService: RoomService,
+                private router: Router) {
 
     }
 
@@ -29,6 +33,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     public refresh(): void {
         console.log("Refreshing");
         this.rooms = this.roomService.getAll();
+    }
+
+    public joinRoom(form: NgForm) {
+        if (form.valid) {
+            console.log("Joining", form.value.name);
+            this.roomService.join(form.value.name)
+                .catch((err, obs) => {
+                    this.joinError = "Cannot join room";
+                    return Observable.throw(err);
+                })
+                .subscribe(info => {
+                    this.router.navigate(['/r', info.id]);
+                });
+        }
     }
 
     public createRoom(form: NgForm) {

@@ -4,17 +4,17 @@
     <input type="text" [(ngModel)]="question.description" placeholder="Description ...">
   </div>
   <div class="row answers edit">
-    <div class="option col-xs-12">
+    <!-- <div class="option col-xs-12">
       <div class="row">
         <div class="col-md-6">
-          <button class="btn btn-block" [class.active]="question.type == 'mc'" (click)="setType('mc')">Multiple Choice</button>
+          <button class="btn btn-block" [class.active]="question.type == 'MultipleChoice'" (click)="setType('MultipleChoice')">Multiple Choice</button>
         </div>
         <div class="col-md-6">
-          <button class="btn btn-block" [class.active]="question.type == 'free'" (click)="setType('free')">Free Answer</button>
+          <button class="btn btn-block" [class.active]="question.type == 'Free'" (click)="setType('Free')">Free Answer</button>
         </div>
       </div>
-    </div>
-    <question-edit-mc [question]="question" *ngIf="question.type == 'mc'"></question-edit-mc>
+    </div> -->
+    <question-edit-mc [question]="question" *ngIf="question.type == 'MultipleChoice'"></question-edit-mc>
   </div>
 
   <div class="text-center">

@@ -57,7 +57,7 @@ module.exports = function makeWebpackConfig() {
    */
   config.output = isTest ? {} : {
     path: root('public/app'),
-    publicPath: isProd ? '/app' : 'http://localhost:8080/',
+    publicPath: isProd ? '/app' : 'http://localhost:8000/',
     filename: isProd ? 'js/[name].[hash].js' : 'js/[name].js',
     chunkFilename: isProd ? '[id].[hash].chunk.js' : '[id].chunk.js'
   };
@@ -281,6 +281,8 @@ module.exports = function makeWebpackConfig() {
    */
   config.devServer = {
     contentBase: './ng2-app/public',
+    port: 8000,
+    host: "0.0.0.0",
     historyApiFallback: true,
     quiet: false,
     stats: 'normal', // none (or false), errors-only, minimal, normal (or true) and verbose

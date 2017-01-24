@@ -30,6 +30,10 @@ export class SessionService {
         })
     }
 
+    public getSession(): Session {
+        return this.session.getValue();
+    }
+
     public signin(identity: IdentityLogin): Observable<Session> {
         return this.http.post("/api/account/signin", identity)
             .map(resp => resp.json())

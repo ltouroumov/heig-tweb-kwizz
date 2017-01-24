@@ -7,21 +7,21 @@
     <div class="col-md-6">
       <h1>
         {{ room.info.name }}
-        <span [class.hidden]="(room.info.status | async) != 'open'" class="label label-success">Open</span>
-        <span [class.hidden]="(room.info.status | async) != 'closed'" class="label label-warning">Closed</span>
+        <span [class.hidden]="room.info.status != 'Open'" class="label label-success">Open</span>
+        <span [class.hidden]="room.info.status != 'Closed'" class="label label-warning">Closed</span>
       </h1>
     </div>
-    <div class="col-md-6 text-right room-id">
-      <b>Room ID:</b> jolly-beaver
+    <div class="col-md-6 text-right room-id" *ngIf="room.info.key">
+      <b>Room ID:</b> {{ room.info.key }}
     </div>
   </div>
 
-  <div class="row toolbox">
+  <div class="row toolbox" *ngIf="isOwner">
     <div class="col-xs-12 text-right">
-      <button [class.hidden]="(room.info.status | async) == 'open'" class="btn btn-success" (click)="changeStatus('open')">
+      <button [class.hidden]="room.info.status == 'Open'" class="btn btn-success" (click)="changeStatus('Open')">
         Open Room
       </button>
-      <button [class.hidden]="(room.info.status | async) == 'closed'" class="btn btn-warning" (click)="changeStatus('closed')">
+      <button [class.hidden]="room.info.status == 'Closed'" class="btn btn-warning" (click)="changeStatus('Closed')">
         Close Room
       </button>
       <button class="btn btn-info" (click)="createQuestion()">
@@ -30,61 +30,18 @@
     </div>
   </div>
 
-  <div *ngFor="let question of (room.questions | async)">
-    <question-edit *ngIf="question.mode == 'edit'" [question]="question" [room]="room"></question-edit>
-    <question-view *ngIf="question.mode == 'view'" [question]="question"></question-view>
+  <div *ngIf="!isOwner && room.info.status == 'Open'">
+    <question-answer *ngFor="let question of room.questions" [question]="question" [socket]="socket"></question-answer>
   </div>
-  <!--
-  <div class="question row">
+
+  <div *ngIf="!isOwner && room.info.status == 'Closed'">
     <div class="col-xs-12">
-      <div class="heading">
-        <h2>data1.question</h2>
-        <p>A little descritive text (optional)</p>
-      </div>
-      <div class="results">
-        <h3>Answers</h3>
-        <div class="row">
-          <div class="col-xs-4">
-            <p>Canvas!!!</p>
-          </div>
-          <div class="col-xs-8">
-            <div class="result">
-              <span>row.label</span>
-              <span class="pull-right">row.value</span>
-              <div class="progress">
-                <div class="progress-bar" style="width: 100%"></div>
-              </div>
-            </div>
-            <div class="result total">
-              <span>Total</span>
-              <span class="pull-right">data1.total</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="text-center">
-        <button class="btn btn-link"><i class="fa fa-chevron-up"></i> Less</button>
-        <button class="btn"><i class="fa fa-chevron-down"></i> More</button>
-      </div>
+      <p class="text-center">The room is closed</p>
     </div>
   </div>
-  <div class="question row">
-    <div class="col-xs-12">
-      <div class="heading">
-        <h2>Is this a question ?</h2>
-        <p>A little descritive text (optional)</p>
-      </div>
-      <div class="results">
-        <h3>Answers</h3>
-        <ul>
-          <li>Answer ...</li>
-        </ul>
-      </div>
-      <div class="text-center">
-        <button class="btn"><i class="fa fa-chevron-up"></i> Less</button>
-        <button class="btn"><i class="fa fa-chevron-down"></i> More</button>
-      </div>
-    </div>
+
+  <div *ngIf="isOwner">
+    <question-edit *ngFor="let question of pending" [question]="question" (onCommit)="commitQuestion($event)" (onCancel)="removeQuestion($event)"></question-edit>
+    <question-view *ngFor="let question of room.questions" [question]="question"></question-view>
   </div>
-  -->
 </div>

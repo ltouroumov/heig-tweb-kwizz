@@ -53,7 +53,7 @@ class MessageQueue {
     }
 
     private send(message: any) {
-        this.socket.send(message);
+        this.socket.send(JSON.stringify(message));
     }
 
     public next(message: any) {

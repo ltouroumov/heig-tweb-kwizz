@@ -1,20 +1,20 @@
-<div class="option col-xs-12" *ngFor="let option of question.options">
+<div class="option col-xs-12" *ngFor="let option of (question.options | async)">
   <div class="row">
-    <div class="col-md-11">
+    <div class="col-xs-11">
       <input type="text" class="form-control" [(ngModel)]="option.title" value="row.label" />
     </div>
-    <div class="col-md-1">
+    <div class="col-xs-1">
       <button class="btn btn-danger" (click)="removeOption(option)"><i class="fa fa-remove"></i></button>
     </div>
   </div>
 </div>
 <div class="option col-xs-12">
   <div class="row">
-    <div class="col-md-11">
-      <input type="text" class="form-control" #optionTitle placeholder="..." />
+    <div class="col-xs-11">
+      <input type="text" class="form-control" [(ngModel)]="newOption" placeholder="..." (keydown.enter)="addOption()" />
     </div>
-    <div class="col-md-1">
-      <button class="btn btn-primary" (click)="addOption(optionTitle.value)"><i class="fa fa-plus"></i></button>
+    <div class="col-xs-1">
+      <button class="btn btn-primary" (click)="addOption()"><i class="fa fa-plus"></i></button>
     </div>
   </div>
 </div>

@@ -6,20 +6,25 @@
   <div class="results" [class.hidden]="!showDetails">
     <h3>Answers</h3>
     <div class="row">
-      <div class="col-xs-4">
-        <p>Canvas!!!</p>
+      <div class="col-xs-3">
+        <canvas baseChart
+                [data]="chartData"
+                [labels]="chartLabels"
+                [options]="{ legend: { display: false } }"
+                [chartType]="'doughnut'">
+        </canvas>
       </div>
-      <div class="col-xs-8">
-        <div class="result" *ngFor="let option of question.options">
+      <div class="col-xs-9">
+        <div class="result" *ngFor="let option of (question.options | async); trackBy: optionId">
           <span>{{ option.title }}</span>
-          <span class="pull-right">{{ option.value }}</span>
+          <span class="pull-right">{{ option.votes | async }}</span>
           <div class="progress">
-            <div class="progress-bar" style="width: 100%"></div>
+            <div class="progress-bar" [style.width]="getWidth(option.votes | async, total | async)"></div>
           </div>
         </div>
         <div class="result total">
           <span>Total</span>
-          <span class="pull-right">total</span>
+          <span class="pull-right">{{ total | async }}</span>
         </div>
       </div>
     </div>

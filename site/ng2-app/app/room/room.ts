@@ -4,23 +4,21 @@ import {Question} from "./question";
 
 export class Room {
 
-    public questions = new BehaviorSubject<Question[]>([
-        new Question('Hello World')
-    ]);
+    public questions: Question[] = [];
 
     constructor(public info: RoomInfo) {
 
     }
 
     public addQuestion(question: Question) {
-        let tmp = this.questions.value;
-        tmp.unshift(question);
-        this.questions.next(tmp);
+        this.questions.push(question);
     }
 
     public delQuestion(question: Question) {
-        let tmp = this.questions.value.filter(q => q != question);
-        this.questions.next(tmp);
+        let idx = this.questions.findIndex(q => q != question);
+        if (idx > -1) {
+            this.questions.splice(idx);
+        }
     }
 
 }

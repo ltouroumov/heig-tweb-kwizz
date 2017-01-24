@@ -1,6 +1,5 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, EventEmitter, Output} from "@angular/core";
 import {Question} from "./question";
-import {Room} from "./room";
 
 @Component({
     selector: 'question-edit',
@@ -13,19 +12,22 @@ export class QuestionEditComponent {
     @Input()
     private question: Question;
 
-    @Input()
-    private room: Room;
+    @Output()
+    private onCommit: EventEmitter<Question> = new EventEmitter();
+
+    @Output()
+    private onCancel: EventEmitter<Question> = new EventEmitter();
 
     public setType(type: string) {
         this.question.type = type;
     }
 
     public doPublish() {
-        this.question.mode = 'view';
+        this.onCommit.emit(this.question);
     }
 
     public doCancel() {
-        this.room.delQuestion(this.question);
+        this.onCancel.emit(this.question);
     }
 
 }

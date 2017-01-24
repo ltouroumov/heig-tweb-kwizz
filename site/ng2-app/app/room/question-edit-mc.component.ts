@@ -11,13 +11,15 @@ export class QuestionEditMcComponent {
     @Input()
     private question: Question;
 
-    public addOption(title: string) {
-        this.question.options.push(new Option(title));
+    private newOption: string;
+
+    public addOption() {
+        this.question.options.push(new Option(this.newOption));
+        this.newOption = "";
     }
 
     public removeOption(option: Option) {
-        let index = this.question.options.indexOf(option);
-        this.question.options.splice(index, 1);
+        this.question.options.remove(opt => opt == option);
     }
 
 }
