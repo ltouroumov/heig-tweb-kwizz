@@ -36,7 +36,14 @@ namespace KwizzApi.Controllers
 
             await _signInManager.SignInAsync(user, isPersistent: false);
             _logger.LogInformation(3, "User created a new account with password.");
-            return Ok(await _userManager.GetUserAsync(HttpContext.User));
+
+            var theUser = await _userManager.FindByNameAsync(model.Username);
+            if (theUser == null)
+            {
+                _logger.LogError("WTF, User not loaded -_-");
+                return BadRequest();
+            }
+            return Ok(theUser);
         }
 
         [HttpPost("login")]
@@ -48,7 +55,8 @@ namespace KwizzApi.Controllers
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, lockoutOnFailure: false);
             if (!result.Succeeded)
                 return BadRequest();
-            ApplicationUser user = await _userManager.FindByNameAsync(model.Username);
+
+            var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
                 _logger.LogError("WTF, User not loaded -_-");
