@@ -1,23 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace KwizzApi.Models
 {
-    
-    public class Room {
-
+    public class Room
+    {
+        [JsonIgnore]
         public long Id { get; set; } = 0;
 
-        public String Name { get; set; }
+        public RoomInfo Info { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public RoomStatus Status { get; set; } = RoomStatus.Closed;
-
+        public ICollection<Question> Questions { get; set; }
     }
-
 }

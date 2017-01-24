@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using KwizzApi.Models;
-using KwizzApi.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -45,7 +44,12 @@ namespace KwizzApi
                 options.UseNpgsql(@"Host=localhost;Database=kwizz;Username=kwizz;Password=kwizz;");
             });
 
-            services.AddSingleton<RoomHandlerManager>();
+            services.AddSingleton(
+                provider => new RoomHandlerManager(
+                    provider.GetService<IServiceProvider>(),
+                    provider.GetService<ILoggerFactory>()
+                )
+            );
 
             // Add framework services.
             services.AddMvc(config =>
@@ -85,13 +89,14 @@ namespace KwizzApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             app.UseIdentity();
-            app.UseWebSockets();
+            app.Map("/connect", RoomHandlerManager.Map);
+            // app.UseWebSockets();
             app.UseMvc();
         }
     }

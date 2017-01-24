@@ -8,9 +8,10 @@ using KwizzApi.Models;
 namespace KwizzApi.Migrations
 {
     [DbContext(typeof(KwizzContext))]
-    partial class KwizzContextModelSnapshot : ModelSnapshot
+    [Migration("20170123123510_AddQuestionsLink")]
+    partial class AddQuestionsLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
@@ -41,6 +42,8 @@ namespace KwizzApi.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256);
 
+                    b.Property<long?>("OptionId");
+
                     b.Property<string>("PasswordHash");
 
                     b.Property<string>("PhoneNumber");
@@ -63,6 +66,8 @@ namespace KwizzApi.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex");
 
+                    b.HasIndex("OptionId");
+
                     b.ToTable("AspNetUsers");
                 });
 
@@ -73,10 +78,8 @@ namespace KwizzApi.Migrations
 
                     b.Property<long?>("QuestionId");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Value")
                         .IsRequired();
-
-                    b.Property<int>("Votes");
 
                     b.HasKey("Id");
 
@@ -139,19 +142,6 @@ namespace KwizzApi.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("RoomInfos");
-                });
-
-            modelBuilder.Entity("KwizzApi.Models.UserAnswer", b =>
-                {
-                    b.Property<long>("OptionId");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("OptionId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserAnswer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -261,6 +251,13 @@ namespace KwizzApi.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("KwizzApi.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("KwizzApi.Models.Option")
+                        .WithMany("Users")
+                        .HasForeignKey("OptionId");
+                });
+
             modelBuilder.Entity("KwizzApi.Models.Option", b =>
                 {
                     b.HasOne("KwizzApi.Models.Question", "Question")
@@ -287,19 +284,6 @@ namespace KwizzApi.Migrations
                     b.HasOne("KwizzApi.Models.ApplicationUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
-                });
-
-            modelBuilder.Entity("KwizzApi.Models.UserAnswer", b =>
-                {
-                    b.HasOne("KwizzApi.Models.Option", "Option")
-                        .WithMany("Answers")
-                        .HasForeignKey("OptionId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("KwizzApi.Models.ApplicationUser", "User")
-                        .WithMany("Answers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

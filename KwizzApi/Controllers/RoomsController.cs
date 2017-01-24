@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using KwizzApi.Models;
 using KwizzApi.Models.Views.Room;
 using KwizzApi.Rooms;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace KwizzApi.Controllers
@@ -32,79 +30,144 @@ namespace KwizzApi.Controllers
 
         // GET api/values
         [HttpGet]
-        public IEnumerable<Room> Get()
+        public async Task<IList<RoomInfo>> Get()
         {
-            return _context.Rooms.OrderBy(room => room.Id).ToList();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            return _context.RoomInfos
+                .Include(r => r.Owner)
+                .Where(r => r.Owner == user)
+                .OrderBy(r => r.Id)
+                .ToList();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public Room Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
-            return _context.Rooms.First(room => room.Id == id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var room = _context.RoomInfos
+                .Include(r => r.Owner)
+                .FirstOrDefault(r => r.Id == id);
+
+            if (room == null)
+                return NotFound();
+
+            return Ok(room);
         }
 
         // POST api/values
         [HttpPost]
-        public Room Post([FromBody] CreateRoom body)
+        public async Task<IActionResult> Post([FromBody] CreateRoom body)
         {
-            var room = new Room()
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var room = new Room
             {
-                Name = body.Name
+                Info = new RoomInfo
+                {
+                    Name = body.Name,
+                    Owner = user
+                }
             };
             _context.Rooms.Add(room);
+            _context.RoomInfos.Add(room.Info);
             _context.SaveChanges();
 
-            return room;
+            return Ok(room);
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public Room Put(int id, [FromBody] UpdateRoom body)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateRoom body)
         {
-            var room = _context.Rooms.First(r => r.Id == id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var room = _context.RoomInfos.FirstOrDefault(r => r.Owner == user && r.Id == id);
+
+            if (room == null)
+                return NotFound();
+
             room.Name = body.Name;
             room.Status = body.Status;
 
-            _context.Rooms.Update(room);
+            _context.RoomInfos.Update(room);
             _context.SaveChanges();
 
-            return room;
+            return Ok(room);
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var room = _context.Rooms.First(r => r.Id == id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var room = _context.Rooms
+                .Include(r => r.Info)
+                .FirstOrDefault(r => r.Info.Owner == user && r.Id == id);
+
+            if (room == null)
+                return NotFound();
+
+            _context.RoomInfos.Remove(room.Info);
             _context.Rooms.Remove(room);
             _context.SaveChanges();
+            return Ok();
         }
 
-        [HttpGet("{id}/connect")]
+        [HttpPost("join")]
+        public async Task<IActionResult> Join([FromBody] JoinView body)
+        {
+            var room = _context.RoomInfos
+                .Include(r => r.Owner)
+                .FirstOrDefault(r => r.Key == body.Name);
+
+            if (room == null)
+                return NotFound();
+
+            return Ok(room);
+        }
+
+        [HttpGet("{id:int}/connect")]
         public async Task Connect(int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             _logger.LogInformation("Attempting connection to room {0} with {1}", id, user.UserName);
-            var room = _context.Rooms.FirstOrDefault(r => r.Id == id);
+            var room = _context.Rooms
+                .Include(r => r.Info)
+                .Include("Questions.Options")
+                .FirstOrDefault(r => r.Info.Id == id);
+
             if (room == null)
             {
                 _logger.LogError("Room not found {0}", id);
+                return;
             }
-            else if (!HttpContext.WebSockets.IsWebSocketRequest)
+
+            if (!HttpContext.WebSockets.IsWebSocketRequest)
             {
                 _logger.LogError("Is not a websocket upgrade request");
+
+                return;
             }
-            else
+
+            var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+            var handler = _roomHandlerManager.GetHandler(room);
+            _logger.LogInformation("Connecting to room {0} ({1})", room.Id, room.Info);
+            try
             {
-                _logger.LogInformation("Accepting Connection");
-                var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                _logger.LogInformation("Creating Handler");
-                var handler = _roomHandlerManager.GetHandler(room);
-                _logger.LogInformation("Handling Connection");
-                await handler.Connect(socket, user).Handle();
-                _logger.LogInformation("Connection Terminated");
+                await handler.Connect(socket, user).HandleAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(0, ex, "Error during socket handling");
             }
         }
+    }
+
+    public class JoinView
+    {
+        public string Name { get; set; }
     }
 }

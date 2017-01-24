@@ -7,11 +7,11 @@ using KwizzApi.Models;
 
 namespace KwizzApi.Rooms
 {
-    public delegate void ConnectHandler(RoomClientSocket client);
+    public delegate Task ConnectHandler(RoomClientSocket client);
 
-    public delegate void MessageHandler(RoomClientSocket client, string msg);
+    public delegate Task MessageHandler(RoomClientSocket client, string msg);
 
-    public delegate void CloseHandler(RoomClientSocket client);
+    public delegate Task CloseHandler(RoomClientSocket client);
 
     public class RoomClientSocket
     {
@@ -37,21 +37,28 @@ namespace KwizzApi.Rooms
             _bufferSize = bufferSize;
         }
 
-        public async Task Handle() {
+        public async Task HandleAsync() {
             var buffer = new byte[_bufferSize];
             var seg = new ArraySegment<byte>(buffer);
 
 
-            OnConnect?.Invoke(this);
+            if (OnConnect != null)
+                await OnConnect.Invoke(this);
 
             while (_socket.State == WebSocketState.Open)
             {
                 var incoming = await _socket.ReceiveAsync(seg, CancellationToken.None);
                 var messageContent = Encoding.UTF8.GetString(buffer, 0, incoming.Count);
-                OnMessage?.Invoke(this, messageContent);
+
+                if (incoming.MessageType == WebSocketMessageType.Close)
+                    continue;
+
+                if (OnMessage != null)
+                    await OnMessage.Invoke(this, messageContent);
             }
 
-            OnClose?.Invoke(this);
+            if (OnClose != null)
+                await OnClose.Invoke(this);
         }
 
         public async Task SendAsync(string message)

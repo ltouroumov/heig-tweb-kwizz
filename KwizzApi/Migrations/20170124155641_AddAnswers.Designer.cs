@@ -8,8 +8,8 @@ using KwizzApi.Models;
 namespace KwizzApi.Migrations
 {
     [DbContext(typeof(KwizzContext))]
-    [Migration("20170122090913_AddApplicationUser")]
-    partial class AddApplicationUser
+    [Migration("20170124155641_AddAnswers")]
+    partial class AddAnswers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -67,18 +67,92 @@ namespace KwizzApi.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("KwizzApi.Models.Option", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long?>("QuestionId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<int>("Votes");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("Options");
+                });
+
+            modelBuilder.Entity("KwizzApi.Models.Question", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<long?>("RoomId");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<int>("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Questions");
+                });
+
             modelBuilder.Entity("KwizzApi.Models.Room", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<long?>("InfoId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InfoId");
+
+                    b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("KwizzApi.Models.RoomInfo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Key");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("OwnerId");
 
                     b.Property<int>("Status");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rooms");
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("RoomInfos");
+                });
+
+            modelBuilder.Entity("KwizzApi.Models.UserAnswer", b =>
+                {
+                    b.Property<long>("OptionId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("OptionId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserAnswer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -186,6 +260,47 @@ namespace KwizzApi.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("KwizzApi.Models.Option", b =>
+                {
+                    b.HasOne("KwizzApi.Models.Question", "Question")
+                        .WithMany("Options")
+                        .HasForeignKey("QuestionId");
+                });
+
+            modelBuilder.Entity("KwizzApi.Models.Question", b =>
+                {
+                    b.HasOne("KwizzApi.Models.Room", "Room")
+                        .WithMany("Questions")
+                        .HasForeignKey("RoomId");
+                });
+
+            modelBuilder.Entity("KwizzApi.Models.Room", b =>
+                {
+                    b.HasOne("KwizzApi.Models.RoomInfo", "Info")
+                        .WithMany()
+                        .HasForeignKey("InfoId");
+                });
+
+            modelBuilder.Entity("KwizzApi.Models.RoomInfo", b =>
+                {
+                    b.HasOne("KwizzApi.Models.ApplicationUser", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+                });
+
+            modelBuilder.Entity("KwizzApi.Models.UserAnswer", b =>
+                {
+                    b.HasOne("KwizzApi.Models.Option", "Option")
+                        .WithMany("Answers")
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("KwizzApi.Models.ApplicationUser", "User")
+                        .WithMany("Answers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
