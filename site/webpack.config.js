@@ -95,7 +95,7 @@ module.exports = function makeWebpackConfig() {
       // copy those assets to output
       {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'file-loader?name=fonts/[name].[hash].[ext]?'
+        loader: 'file-loader?name=/fonts/[name].[hash].[ext]?'
       },
 
       // Support for *.json files.
@@ -180,6 +180,7 @@ module.exports = function makeWebpackConfig() {
     new webpack.DefinePlugin({
       // Environment helpers
       'process.env': {
+        API_BASE: JSON.stringify(isProd ? "localhost:5000" : "localhost:8000"),
         ENV: JSON.stringify(ENV)
       }
     }),

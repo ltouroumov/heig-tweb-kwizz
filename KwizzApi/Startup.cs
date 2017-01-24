@@ -51,6 +51,8 @@ namespace KwizzApi
                 )
             );
 
+            services.AddCors();
+
             // Add framework services.
             services.AddMvc(config =>
             {
@@ -94,6 +96,12 @@ namespace KwizzApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseCors(builder => {
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .WithHeaders("*");
+            });
             app.UseIdentity();
             app.Map("/connect", RoomHandlerManager.Map);
             // app.UseWebSockets();

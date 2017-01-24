@@ -71,7 +71,7 @@ export class RoomComponent implements OnInit {
                 console.log("Got Room", room);
                 this.room = room;
 
-                this.socket = this.socketService.connect(`ws://localhost:5000/connect?id=${room.info.id}`);
+                this.socket = this.socketService.connect(`ws://${this.roomService.apiBase}/connect?id=${room.info.id}`);
                 this.socket.catch((err, obs) => {
                     console.log("Socket error");
                     return Observable.throw(err);

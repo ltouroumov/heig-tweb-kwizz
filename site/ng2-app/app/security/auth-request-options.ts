@@ -8,6 +8,7 @@ export class AuthRequestOptions extends BaseRequestOptions {
         super();
         this.headers.append("Content-Type", "application/json");
         this.headers.append("Accept", "application/json");
+        this.withCredentials = true;
     }
 
 }

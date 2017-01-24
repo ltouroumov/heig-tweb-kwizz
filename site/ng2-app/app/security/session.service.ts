@@ -17,7 +17,11 @@ export class SessionService {
 
     public errors = new BehaviorSubject<string[]>([]);
 
+    public apiBase: string;
+
     public constructor(private http: Http) {
+        this.apiBase = process.env.API_BASE || 'localhost:8000';
+
         console.log("SessionService Created");
         let sessionCookie = Cookie.get('kwizz-session');
         if (sessionCookie != null) {
@@ -35,7 +39,7 @@ export class SessionService {
     }
 
     public signin(identity: IdentityLogin): Observable<Session> {
-        return this.http.post("/api/account/signin", identity)
+        return this.http.post(`http://${this.apiBase}/account/signin`, identity)
             .map(resp => resp.json())
             .map(sess => {
                 console.log("User", sess);
@@ -46,7 +50,7 @@ export class SessionService {
     }
 
     public login(identity: IdentityLogin): Observable<Session> {
-        return this.http.post("/api/account/login", identity)
+        return this.http.post(`http://${this.apiBase}/account/login`, identity)
             .map(resp => resp.json())
             .map(sess => {
                 console.log("User", sess);
@@ -57,7 +61,7 @@ export class SessionService {
     }
 
     public logout(): Observable<Session> {
-        return this.http.post("/api/account/logout", {})
+        return this.http.post(`http://${this.apiBase}/account/logout`, {})
             .map(resp => {
                 let session = Session.anonymous;
                 this.session.next(session);

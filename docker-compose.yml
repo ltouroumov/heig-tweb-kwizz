@@ -6,6 +6,8 @@ services:
       - POSTGRES_USER=kwizz
       - POSTGRES_PASSWORD=kwizz
       - POSTGRES_DB=kwizz
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
 
   api:
     build: ./KwizzApi
@@ -17,9 +19,7 @@ services:
   site:
     build: ./site
     ports:
-      - "8081:80"
+      - "8000:80"
     environment:
       - WEB_DOCUMENT_ROOT=/var/web/public
-      - WEB_DOCUMENT_INDEX=/app.php
-    volumes:
-      - ./site:/var/web:Z
+      - API_BASE=localhost:5000

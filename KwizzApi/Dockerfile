@@ -6,10 +6,10 @@ WORKDIR /app
 
 ENV LTTNG_UST_REGISTER_TIMEOUT=0
 
-RUN ["dotnet", "restore"]
+RUN dotnet restore -v Minimal
 
-RUN ["dotnet", "build"]
+RUN dotnet build
 
 EXPOSE 5000/tcp
 
-CMD ["dotnet", "run", "--server.urls", "http://*:5000"]
+CMD dotnet run --server.urls http://*:5000
