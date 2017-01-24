@@ -40,6 +40,11 @@ export class SessionService {
 
     public signin(identity: IdentityLogin): Observable<Session> {
         return this.http.post(`http://${this.apiBase}/account/signin`, identity)
+            .catch((err, obs) => {
+                let session = Session.anonymous;
+                this.session.next(session);
+                return Observable.throw(err);
+            })
             .map(resp => resp.json())
             .map(sess => {
                 console.log("User", sess);
@@ -51,6 +56,11 @@ export class SessionService {
 
     public login(identity: IdentityLogin): Observable<Session> {
         return this.http.post(`http://${this.apiBase}/account/login`, identity)
+            .catch((err, obs) => {
+                let session = Session.anonymous;
+                this.session.next(session);
+                return Observable.throw(err);
+            })
             .map(resp => resp.json())
             .map(sess => {
                 console.log("User", sess);
@@ -62,6 +72,11 @@ export class SessionService {
 
     public logout(): Observable<Session> {
         return this.http.post(`http://${this.apiBase}/account/logout`, {})
+            .catch((err, obs) => {
+                let session = Session.anonymous;
+                this.session.next(session);
+                return Observable.throw(err);
+            })
             .map(resp => {
                 let session = Session.anonymous;
                 this.session.next(session);
