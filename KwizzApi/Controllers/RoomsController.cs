@@ -105,6 +105,7 @@ namespace KwizzApi.Controllers
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var room = _context.Rooms
                 .Include(r => r.Info)
+                .Include("Questions.Options.Answers")
                 .FirstOrDefault(r => r.Info.Owner == user && r.Id == id);
 
             if (room == null)
