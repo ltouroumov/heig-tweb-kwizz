@@ -23,6 +23,7 @@ Firstly, we would implement other types of questions. Currently only multiple ch
   * Webpack
   * Docker
   * Node
+  * ChartJS
 
 ## Navigation
 ![image](nav_chart.png)
