@@ -180,7 +180,7 @@ module.exports = function makeWebpackConfig() {
     new webpack.DefinePlugin({
       // Environment helpers
       'process.env': {
-        API_BASE: JSON.stringify(isProd ? "localhost:5000" : "localhost:8000"),
+        API_BASE: JSON.stringify(isProd ? "localhost:8000/api" : "localhost:8000/api"),
         ENV: JSON.stringify(ENV)
       }
     }),

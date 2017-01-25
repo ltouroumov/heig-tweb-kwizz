@@ -6,7 +6,7 @@ RUN wget -qO /tmp/node.tar.xz https://nodejs.org/dist/v6.9.4/node-v6.9.4-linux-x
 
 COPY 10-vhost.conf /opt/docker/etc/httpd/vhost.common.d/
 
-RUN a2enmod proxy
+RUN a2enmod proxy && a2enmod proxy_http && a2enmod proxy_wstunnel
 
 WORKDIR /var/web
 
