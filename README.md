@@ -1,9 +1,15 @@
 # TWEB - KWizz
 
-Access the app @ [kwizz.synergy-net.ch](http://kwizz.synergy-net.ch/)
+Access the app @ [kwizz.ltouroumov.ch](http://kwizz.ltouroumov.ch/)
 
 ## Authors
 Laureline David & Yves Athanasiadès
+
+## Introduction
+This projet allow someone (eg. a teacher) to create online surveys. Those surveys are seperated into rooms. Each room contains only one survey with one or more questions. This application allows the creator to live view datas inside the room (questions answered, correct answers, etc.). When a room is closed the results are pushed towards the users (eg. students).
+
+## Next Steps
+Firstly, we would implement other types of questions. Currently only multiple choice questions can be used. In the future the application should allow to create open questions.
 
 ## Technologies / frameworks
   * Angular2
@@ -11,8 +17,12 @@ Laureline David & Yves Athanasiadès
   * Silex
   * Twig
   * PHP
-  * .Net MVC
+  * .Net Core MVC
+  * .NET Core Entity framework
   * Vanilla WebSockets
+  * Webpack
+  * Docker
+  * Node
 
 ## Navigation
 ![image](nav_chart.png)
